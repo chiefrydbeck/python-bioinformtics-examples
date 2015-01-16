@@ -74,6 +74,7 @@ class XmlDictConfig(dict):
 pacBioProjFolders = raw_input('Enter the project folder names: ')
 pbf = pacBioProjFolders.split()
 print " "
+print "ProjectFolder SMRTcell SampleID"
 #for each folder
 for  pacBioProjFold in pbf:
     #get the subfolders
@@ -92,7 +93,7 @@ for  pacBioProjFold in pbf:
             xml_string = fh.read()
             root = ElementTree.XML(xml_string.replace('http://pacificbiosciences.com/PAP/Metadata.xsd',''))
             xmldict = XmlDictConfig(root)
-            print "SMRTcell", dirnames[counter], "of project",pacBioProjFold, "has sample ID:", xmldict["Sample"]["Name"]
+            print pacBioProjFold, dirnames[counter], xmldict["Sample"]["Name"]
             counter += 1
     print " "
  
