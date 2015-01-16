@@ -69,21 +69,24 @@ class XmlDictConfig(dict):
             else:
                 self.update({element.tag: element.text})
 ## end of http://code.activestate.com/recipes/410469/
-
+                
+#ask for project folder names
 pacBioProjFolders = raw_input('Enter the project folder names: ')
 pbf = pacBioProjFolders.split()
-#pacBioProjFolders = ['2014run34_213','2014run34_214']
-smrtCellFold = 'all'
-#if smrtCellFold == 'all':
+print " "
+#for each folder
 for  pacBioProjFold in pbf:
     #get the subfolders
     f = []
+    #counter needed to get SMRTcell foldername corresponding to metadatafile
     counter = 0
+    # get list of subfolder names (SMRTcell folders); using package walk
     for (dirpath, dirnames, filenames) in walk(pacBioProjFold):
         f.extend(dirnames)
         break
-    # get the metadata file in the SMRTcell folder
-    filenames = glob(join(getcwd(), pacBioProjFold, '*','*metadata.xml'))   
+     #get list of absolute file paths to metadatfiles (this assumes one metadata file/SMRTcell folder);using glob 
+    filenames = glob(join(getcwd(), pacBioProjFold, '*','*metadata.xml')) 
+    # for each metadata absolute file path print SMRTcellFolder[counter] and metadata filename
     for fn in filenames:
         with open (fn) as fh:
             xml_string = fh.read()
@@ -91,12 +94,8 @@ for  pacBioProjFold in pbf:
             xmldict = XmlDictConfig(root)
             print "SMRTcell", dirnames[counter], "of project",pacBioProjFold, "has sample ID:", xmldict["Sample"]["Name"]
             counter += 1
-
-#print all keys and values in dictionary
-#for key in xmldict:
-#    print key, "==>", xmldict[key], "\n"
-
-#print the value for keys Sampel and Name    
+    print " "
+ 
 
 
 
