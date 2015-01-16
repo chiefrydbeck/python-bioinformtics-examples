@@ -1,5 +1,9 @@
 ## Based on http://code.activestate.com/recipes/410469/ 
+##and http://stackoverflow.com/questions/3207219/how-to-list-all-files-of-a-directory-in-python 
 import xml.etree.ElementTree as ElementTree
+from glob import glob
+from os.path import join
+from os      import getcwd
 
 class XmlListConfig(list):
     def __init__(self, aList):
@@ -64,18 +68,24 @@ class XmlDictConfig(dict):
                 self.update({element.tag: element.text})
 ## end of http://code.activestate.com/recipes/410469/
 
-file = '../input/m141212_132944_42174_c100743252550000001823147204221550_s1_p0.metadata.xml'
-
-with open (file) as fh:
-    xml_string = fh.read()
-root = ElementTree.XML(xml_string.replace('http://pacificbiosciences.com/PAP/Metadata.xsd',''))
-xmldict = XmlDictConfig(root)
-
+pacBioProjFolders = raw_input('Enter the project folder names: ')
+pbf = pacBioProjFolders.split()
+#pacBioProjFolders = ['2014run34_213','2014run34_214']
+smrtCellFold = 'all'
+#if smrtCellFold == 'all':
+for  pacBioProjFold in pbf:
+    filenames = glob(join(getcwd(), pacBioProjFold, '*','*metadata.xml'))   
+    for fn in filenames:
+        with open (fn) as fh:
+            xml_string = fh.read()
+            root = ElementTree.XML(xml_string.replace('http://pacificbiosciences.com/PAP/Metadata.xsd',''))
+            xmldict = XmlDictConfig(root)
+            print xmldict["Sample"]["Name"]
 #print all keys and values in dictionary
 #for key in xmldict:
 #    print key, "==>", xmldict[key], "\n"
 
 #print the value for keys Sampel and Name    
-print xmldict["Sample"]["Name"]
+
 
 
