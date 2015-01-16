@@ -1,9 +1,11 @@
 ## Based on http://code.activestate.com/recipes/410469/ 
 ##and http://stackoverflow.com/questions/3207219/how-to-list-all-files-of-a-directory-in-python 
+##SHOULD STAND IN A FOLDER CONTAINING PACBIO PROJECTFOLDERS WHEN USING THIS SCRIPT
 import xml.etree.ElementTree as ElementTree
 from glob import glob
 from os.path import join
-from os      import getcwd
+from os import getcwd
+from os import walk
 
 class XmlListConfig(list):
     def __init__(self, aList):
@@ -74,13 +76,22 @@ pbf = pacBioProjFolders.split()
 smrtCellFold = 'all'
 #if smrtCellFold == 'all':
 for  pacBioProjFold in pbf:
+    #get the subfolders
+    f = []
+    counter = 0
+    for (dirpath, dirnames, filenames) in walk(pacBioProjFold):
+        f.extend(dirnames)
+        break
+    # get the metadata file in the SMRTcell folder
     filenames = glob(join(getcwd(), pacBioProjFold, '*','*metadata.xml'))   
     for fn in filenames:
         with open (fn) as fh:
             xml_string = fh.read()
             root = ElementTree.XML(xml_string.replace('http://pacificbiosciences.com/PAP/Metadata.xsd',''))
             xmldict = XmlDictConfig(root)
-            print xmldict["Sample"]["Name"]
+            print "SMRTcell", dirnames[counter], "of project",pacBioProjFold, "has sample ID:", xmldict["Sample"]["Name"]
+            counter += 1
+
 #print all keys and values in dictionary
 #for key in xmldict:
 #    print key, "==>", xmldict[key], "\n"
